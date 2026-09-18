@@ -190,7 +190,7 @@ export function AdminDocsPage() {
       case "certificateSheet":
         return "Certificado de Calidad";
       case "safetySheet":
-        return "Hoja de Seguridad (MSDS)";
+        return "Hoja de Seguridad";
       case "affidavitSheet":
         return "Declaración de Aplicación";
     }
@@ -244,10 +244,9 @@ export function AdminDocsPage() {
                   type={showPassword ? "text" : "password"}
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="Ingresa la contraseña..."
-                  className={`w-full bg-white/5 border ${
-                    loginError ? "border-red-500 focus:ring-red-500" : "border-white/10 focus:border-[#c23b24]"
-                  } rounded-xl px-4 py-3.5 pr-12 text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none transition-all`}
+                  placeholder="••••••••"
+                  className={`w-full bg-white/5 border ${loginError ? "border-red-500 focus:ring-red-500" : "border-white/10 focus:border-[#c23b24]"
+                    } rounded-xl px-4 py-3.5 pr-12 text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none transition-all`}
                   required
                 />
                 <button
@@ -268,12 +267,6 @@ export function AdminDocsPage() {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </form>
-
-          <div className="mt-8 pt-6 border-t border-white/10 text-center">
-            <p className="text-xs text-[#fcfaf9]/40 italic">
-              Contraseña predeterminada: <span className="text-[#f6d94b] font-mono">minit2026</span>
-            </p>
-          </div>
         </motion.div>
       </div>
     );
@@ -379,48 +372,22 @@ export function AdminDocsPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 pt-6">
-            {/* Upload File */}
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col justify-between">
+          <div className="pt-6">
+            {/* Upload File PDF only */}
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/70 mb-2">
-                  Opción 1: Subir Archivo PDF desde tu PC
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/80 mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-[#c23b24]" />
+                  Subir Archivo PDF desde tu computadora
                 </label>
                 <input
                   type="file"
                   accept=".pdf,application/pdf"
                   onChange={(e) => handleFileChange("GLOBAL", "globalAffidavit", e)}
-                  className="block w-full text-xs text-[#fcfaf9]/70 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer"
+                  className="block w-full text-xs text-[#fcfaf9]/80 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer transition-all"
                 />
               </div>
-              <p className="text-[11px] text-[#fcfaf9]/40 mt-3 italic">Formatos permitidos: .pdf (Máx. 10MB)</p>
-            </div>
-
-            {/* Paste URL */}
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/5 flex flex-col justify-between">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/70 mb-2">
-                  Opción 2: Pegar Enlace / URL del Documento
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    placeholder="https://tu-servidor.com/declaracion.pdf"
-                    value={localDocInputs["GLOBAL_globalAffidavit"] || ""}
-                    onChange={(e) =>
-                      setLocalDocInputs((prev) => ({ ...prev, GLOBAL_globalAffidavit: e.target.value }))
-                    }
-                    className="flex-grow bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none focus:border-[#c23b24]"
-                  />
-                  <Button
-                    onClick={() => handleUrlSave("GLOBAL", "globalAffidavit")}
-                    className="bg-[#c23b24] hover:bg-[#c23b24]/90 text-white text-xs font-bold px-4"
-                  >
-                    Guardar
-                  </Button>
-                </div>
-              </div>
-              <p className="text-[11px] text-[#fcfaf9]/40 mt-3 italic">Puedes utilizar enlaces de Google Drive, Dropbox, Vercel Blob o tu servidor.</p>
+              <p className="text-xs text-[#fcfaf9]/40 mt-3 italic">Formato únicamente permitido: .pdf (Máx. 10MB)</p>
             </div>
           </div>
         </section>
@@ -508,11 +475,10 @@ export function AdminDocsPage() {
                             </div>
 
                             <span
-                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                                isCustom
+                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${isCustom
                                   ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
                                   : "bg-white/10 text-[#fcfaf9]/60"
-                              }`}
+                                }`}
                             >
                               {isCustom ? "Actualizado" : "Original"}
                             </span>
@@ -542,43 +508,17 @@ export function AdminDocsPage() {
                             )}
                           </div>
 
-                          {/* Upload / Input Fields */}
-                          <div className="space-y-3 pt-2 border-t border-white/5">
-                            <div>
-                              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/50 mb-1">
-                                Subir PDF desde tu equipo:
-                              </span>
-                              <input
-                                type="file"
-                                accept=".pdf,application/pdf"
-                                onChange={(e) => handleFileChange(product.id, docType, e)}
-                                className="block w-full text-[11px] text-[#fcfaf9]/60 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer"
-                              />
-                            </div>
-
-                            <div>
-                              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/50 mb-1">
-                                O pegar enlace URL:
-                              </span>
-                              <div className="flex gap-2">
-                                <input
-                                  type="url"
-                                  placeholder="https://..."
-                                  value={localDocInputs[inputKey] || ""}
-                                  onChange={(e) =>
-                                    setLocalDocInputs((prev) => ({ ...prev, [inputKey]: e.target.value }))
-                                  }
-                                  className="flex-grow bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none focus:border-[#c23b24]"
-                                />
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleUrlSave(product.id, docType)}
-                                  className="bg-[#c23b24] hover:bg-[#c23b24]/90 text-white text-xs px-3 font-semibold"
-                                >
-                                  Guardar
-                                </Button>
-                              </div>
-                            </div>
+                          {/* Upload PDF Field */}
+                          <div className="pt-2 border-t border-white/5">
+                            <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/60 mb-1.5">
+                              Seleccionar nuevo archivo PDF:
+                            </span>
+                            <input
+                              type="file"
+                              accept=".pdf,application/pdf"
+                              onChange={(e) => handleFileChange(product.id, docType, e)}
+                              className="block w-full text-[11px] text-[#fcfaf9]/70 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer transition-all"
+                            />
                           </div>
                         </div>
                       );

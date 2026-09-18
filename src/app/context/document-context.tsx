@@ -75,7 +75,7 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // Fetch initial document overrides from Vercel Serverless API if available
     const fetchServerDocs = async () => {
       try {
-        const res = await fetch("/api/documents");
+        const res = await fetch(`/api/documents?t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.overrides && Object.keys(data.overrides).length > 0) {
@@ -128,7 +128,7 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       technicalSheet: prodOverrides.technicalSheet || product?.technicalSheet || "",
       certificateSheet: prodOverrides.certificateSheet || product?.certificateSheet || "",
       safetySheet: prodOverrides.safetySheet || product?.safetySheet || "",
-      affidavitSheet: prodOverrides.affidavitSheet || product?.affidavitSheet || globalAffidavit,
+      affidavitSheet: prodOverrides.affidavitSheet || globalAffidavit || product?.affidavitSheet || "",
     };
   };
 
