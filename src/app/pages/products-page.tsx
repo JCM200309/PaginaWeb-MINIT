@@ -4,12 +4,15 @@ import { Footer } from "../components/footer";
 import { ProductCard } from "../components/product-card";
 import { products } from "../data/products";
 import { useLanguage } from "../context/language-context";
+import { useDocumentContext } from "../context/document-context";
+import { openDocument } from "../utils/doc-utils";
 import { Flame, FileText } from "lucide-react";
 import { FireIllusion } from "../components/fire-illusion";
 import { Button } from "../components/ui/button";
 
 export function ProductsPage() {
   const { t } = useLanguage();
+  const { globalAffidavit } = useDocumentContext();
 
   return (
     <div className="min-h-screen">
@@ -38,12 +41,13 @@ export function ProductsPage() {
               {t("products.subtitle")}
             </p>
             <div className="flex justify-center mt-12">
-              <a href="/documentos/declaracion de aplicacion.pdf" target="_blank" rel="noopener noreferrer">
-                <Button className="bg-[#f6d94b] hover:bg-[#f6d94b]/90 text-[#140c03] font-extrabold text-lg px-10 py-8 shadow-[0_0_40px_-10px_rgba(246,217,75,0.4)] hover:shadow-[0_0_50px_-5px_rgba(246,217,75,0.6)] transition-all duration-300 transform hover:-translate-y-1 rounded-2xl border border-[#f6d94b]/50">
-                  <FileText className="w-6 h-6 mr-3" />
-                  {t("products.affidavit")}
-                </Button>
-              </a>
+              <Button
+                onClick={() => openDocument(globalAffidavit)}
+                className="bg-[#f6d94b] hover:bg-[#f6d94b]/90 text-[#140c03] font-extrabold text-lg px-10 py-8 shadow-[0_0_40px_-10px_rgba(246,217,75,0.4)] hover:shadow-[0_0_50px_-5px_rgba(246,217,75,0.6)] transition-all duration-300 transform hover:-translate-y-1 rounded-2xl border border-[#f6d94b]/50"
+              >
+                <FileText className="w-6 h-6 mr-3" />
+                {t("products.affidavit")}
+              </Button>
             </div>
           </motion.div>
         </div>

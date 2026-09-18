@@ -5,20 +5,24 @@ import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { Button } from "../components/ui/button";
 import { useLanguage } from "../context/language-context";
+import { useDocumentContext } from "../context/document-context";
+import { openDocument } from "../utils/doc-utils";
 import { products } from "../data/products";
-import { ArrowLeft, Package, CheckCircle, Award, FileText, ExternalLink } from "lucide-react";
+import { ArrowLeft, Package, CheckCircle, Award, FileText, ExternalLink, Store } from "lucide-react";
 
 export function ProductDetailPage() {
   const { id } = useParams();
   const { language, t } = useLanguage();
+  const { getProductDocs } = useDocumentContext();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const product = products.find((p) => p.id === id);
+  const docs = product ? getProductDocs(product.id) : null;
 
-  if (!product) {
+  if (!product || !docs) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -86,50 +90,79 @@ export function ProductDetailPage() {
                 </p>
               </div>
 
-              {/* Quick Actions */}
-              <div className="flex flex-wrap gap-4">
-                <a href={(product.buyOnline)} target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#c23b24] hover:bg-[#c23b24]/90 text-white font-semibold">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    {t("products.buyOnline")}
-                  </Button>
-                </a>
-                <a href={product.technicalSheet} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="border-white/20 text-[#fcfaf9] hover:bg-white/10 bg-transparent font-semibold shadow-none">
+              {/* Quick Actions & Buy Options */}
+              <div className="space-y-4 pt-2">
+                <div className="flex flex-wrap gap-4 items-center">
+                  {/* Tienda Nube (Primary CTA) */}
+                  <a
+                    href={product.buyTiendaNube || "https://minitignifugos.mitiendanube.com/productos/"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="bg-gradient-to-r from-[#004bbd] via-[#0050ff] to-[#0d6eff] hover:from-[#003ecb] hover:to-[#0050ff] text-white font-extrabold px-6 py-6 rounded-xl shadow-lg shadow-[#0050ff]/30 hover:shadow-xl transition-all duration-300 group/tn border-none">
+                      <Store className="w-5 h-5 mr-2 group-hover/tn:scale-110 transition-transform" />
+                      <div className="flex flex-col text-left">
+                        <span className="text-base leading-none">{t("products.buyTiendaNube")}</span>
+                        <span className="text-[10px] text-blue-100 uppercase tracking-widest font-bold mt-1">{t("products.officialStore")}</span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 ml-3 opacity-80 group-hover/tn:translate-x-1 transition-transform" />
+                    </Button>
+                  </a>
+
+                  {/* Mercado Libre (Secondary Option) */}
+                  <a
+                    href={product.buyMercadoLibre || product.buyOnline || "https://www.mercadolibre.com.ar/pagina/minitignifugos"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="bg-[#fffbda] hover:bg-[#fff7b0] border border-[#ffe600] text-[#2d3277] font-bold px-5 py-6 rounded-xl transition-all shadow-sm hover:shadow group/ml">
+                      <img
+                        src="/Logos/meliLogo.png"
+                        alt="Mercado Libre"
+                        className="w-5 h-5 object-contain rounded-full mr-2 border border-[#ffe600]/50"
+                      />
+                      <span className="text-sm">{t("products.buyMercadoLibre")}</span>
+                      <ExternalLink className="w-4 h-4 ml-2 text-[#2d3277]/60 group-hover/ml:text-[#2d3277]" />
+                    </Button>
+                  </a>
+
+                  {/* Technical Sheet */}
+                  <Button
+                    onClick={() => openDocument(docs.technicalSheet)}
+                    variant="outline"
+                    className="border-white/20 text-[#fcfaf9] hover:bg-white/10 bg-transparent font-semibold py-6 rounded-xl shadow-none"
+                  >
                     <FileText className="w-4 h-4 mr-2" />
                     {t("products.technicalSheet")}
                   </Button>
-                </a>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/10">
-                <a
-                  href={product.certificateSheet}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium"
+                <button
+                  type="button"
+                  onClick={() => openDocument(docs.certificateSheet)}
+                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
                 >
                   <Award className="w-4 h-4 text-[#c23b24]" />
                   <span>{t("products.certificates")}</span>
-                </a>
-                <a
-                  href={product.safetySheet}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium"
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openDocument(docs.safetySheet)}
+                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
                 >
                   <FileText className="w-4 h-4 text-[#c23b24]" />
                   <span>{t("products.safetySheet")}</span>
-                </a>
-                <a
-                  href={product.affidavitSheet}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium"
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openDocument(docs.affidavitSheet)}
+                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
                 >
                   <FileText className="w-4 h-4 text-[#c23b24]" />
                   <span>{t("products.affidavit")}</span>
-                </a>
+                </button>
               </div>
             </motion.div>
           </div>

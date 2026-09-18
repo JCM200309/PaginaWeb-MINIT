@@ -24,6 +24,8 @@ export interface Product {
     chemicalPresentation: string;
   };
   buyOnline?: string;
+  buyTiendaNube?: string;
+  buyMercadoLibre?: string;
 }
 
 export const products: Product[] = [
@@ -39,6 +41,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Maderas/hojaSeguridadMadera.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Woods</strong> is a <strong>Class A</strong> fire retardant and wood preservative made from natural salts. This non toxic product, colorless and odorless, penetrates deeply without altering the material's natural color or texture. <br> Besides preventing ignition and fire spread, it <strong>reduces smoke and toxic gas</strong> emissions by up to 70%. Being <strong>100% biodegradable, non-toxic, and pet-friendly</strong>, it is the safest, eco-friendly solution for protecting wood, cellulose, and composite structures.<br> When used on wood, it also prevents the presence of <strong>fungi</strong>, <strong>bacteria</strong> and <strong>insects</strong> (moths and termites).",
       uses: [
@@ -98,6 +102,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Textiles/hojaSeguridadTextil.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Textile</strong> is a <strong>Class A </strong>fire retardant made from natural salts. It is a colorless, odorless, and non-toxic liquid featuring highly absorbent active penetrating agents, providing <strong>highly effective fire-inhibiting protection</strong>.<br> It prevents fire spread and <strong>reduces smoke and gas generation by up to 70%</strong>. It does not alter the toxicity of the smoke; rather, it decreases the overall amount of smoke by suppressing the fire. <br> The product is <strong>100% biodegradable, non-toxic, and pet-friendly</strong>, offering the safest, eco-friendly solution for protecting fabrics.",
       uses: [
@@ -155,6 +161,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Total/hojaSeguridadTotal.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Total</strong> is a <strong>Class A </strong>fire retardant made from natural salts. It is a colorless, odorless, and non-toxic liquid featuring highly absorbent active penetrating agents, providing <strong>highly effective fire-inhibiting protection</strong>.<br> It prevents fire spread and <strong>reduces smoke and gas generation by up to 70%</strong>. It does not alter the toxicity of the smoke; rather, it decreases the overall amount of smoke by suppressing the fire. <br> The product is <strong>100% biodegradable, non-toxic, and pet-friendly</strong>, offering the safest, eco-friendly solution for protecting for all types of materials.",
       uses: [
@@ -215,6 +223,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Laca/hojaSeguridadLaca.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Fire-Retardant Hydro-Lacquer</strong> is a highly effective, transparent, water-based fire retardant. It slows the rate of fire spread and produces low thermal conductivity, protecting the treated surface from the effects of fire. In addition to its excellent surface coating protection, its fire-retardant action significantly <strong>reduces smoke emissions</strong>.",
       uses: [
@@ -268,6 +278,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Latex/hojaSeguridadLatex.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Latex</strong> is a water-based, fire-retardant paint. It is applied like any other paint and is a highly effective fire retardant. It slows the rate of fire spread and produces low thermal conductivity. In the presence of fire, it acts as a barrier with low intumescence and, thanks to its refractory nanoparticles, <strong>withstands temperatures up to 960°C</strong>. Furthermore, its fire-retardant properties reduce smoke emissions.",
       uses: [
@@ -321,6 +333,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/Intumescente/hojaSeguridadIntumescente.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Intumescent FR936 </strong> is a highly effective fire retardant and thermal insulator. It slows the rate of fire spread and produces low thermal conductivity. In the presence of fire, it acts as a high-intumescent thermal insulating barrier that, thanks to its refractory nanoparticles, <strong>withstands temperatures up to 960°C</strong>. Furthermore, its fire-retardant properties reduce smoke emission.",
       uses: [
@@ -374,6 +388,8 @@ export const products: Product[] = [
     safetySheet: "/documentos/HidroEsmalte/hojaSeguridadHidroEsmalte.pdf",
     affidavitSheet: "/documentos/declaracion de aplicacion.pdf",
     buyOnline: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
+    buyTiendaNube: "https://minitignifugos.mitiendanube.com/productos/",
+    buyMercadoLibre: "https://www.mercadolibre.com.ar/pagina/minitignifugos#client=SEARCH&component_id=menu_home&component=menu_home&label=Inicio&tracking_id=4e609e7cdcf849750f9376d5069a6a19&global_position=1",
     detailsEn: {
       about: "<strong>MINIT Hidro Esmalte </strong> is a water-based fire retardant paint. It is applied like any other paint, and is a very effective fire retardant. It slows the rate of fire spread and produces low thermal conductivity. In the presence of fire, it acts as a barrier with low intumescence and thanks to its refractory nanoparticles, <strong> withstands temperatures of up to 960°C</strong>. Furthermore, its fire-retardant properties reduce smoke emission.",
       uses: [
