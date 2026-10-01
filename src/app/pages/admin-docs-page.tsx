@@ -93,19 +93,25 @@ export function AdminDocsPage() {
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("El archivo supera los 10MB. Te recomendamos usar un enlace directo o comprimir el PDF.");
+    if (file.size > 4.5 * 1024 * 1024) {
+      toast.error("El archivo supera los 4.5MB (límite máximo permitido por la plataforma). Por favor comprime el PDF o utiliza una URL directa.");
+      return;
     }
 
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       const result = reader.result as string;
-      if (productId === "GLOBAL") {
-        updateGlobalAffidavit(result);
-        toast.success("Declaración de Aplicación General actualizada exitosamente.");
-      } else {
-        updateProductDoc(productId, docType as DocType, result);
-        toast.success(`Documento actualizado para ${productId}.`);
+      const toastId = toast.loading("Subiendo documento al servidor...");
+      try {
+        if (productId === "GLOBAL") {
+          await updateGlobalAffidavit(result);
+          toast.success("Declaración de Aplicación General actualizada exitosamente.", { id: toastId });
+        } else {
+          await updateProductDoc(productId, docType as DocType, result);
+          toast.success(`Documento actualizado para ${productId}.`, { id: toastId });
+        }
+      } catch (err) {
+        toast.error("Error al guardar el documento.", { id: toastId });
       }
     };
     reader.readAsDataURL(file);
@@ -372,13 +378,13 @@ export function AdminDocsPage() {
             </div>
           </div>
 
-          <div className="pt-6">
-            {/* Upload File PDF only */}
+          <div className="pt-6 grid md:grid-cols-2 gap-4">
+            {/* Upload File PDF */}
             <div className="bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/80 mb-3 flex items-center gap-2">
                   <Upload className="w-4 h-4 text-[#c23b24]" />
-                  Subir Archivo PDF desde tu computadora
+                  Subir Archivo PDF (Máx. 4.5MB)
                 </label>
                 <input
                   type="file"
@@ -387,7 +393,33 @@ export function AdminDocsPage() {
                   className="block w-full text-xs text-[#fcfaf9]/80 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer transition-all"
                 />
               </div>
-              <p className="text-xs text-[#fcfaf9]/40 mt-3 italic">Formato únicamente permitido: .pdf (Máx. 10MB)</p>
+              <p className="text-xs text-[#fcfaf9]/40 mt-3 italic">Ideal para archivos directos en PDF.</p>
+            </div>
+
+            {/* URL input */}
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/80 mb-3 flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4 text-[#f6d94b]" />
+                  O pegar enlace URL (Google Drive, Cloudinary, etc.)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={localDocInputs["GLOBAL_globalAffidavit"] || ""}
+                    onChange={(e) => setLocalDocInputs((prev) => ({ ...prev, GLOBAL_globalAffidavit: e.target.value }))}
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none focus:border-[#c23b24]"
+                  />
+                  <Button
+                    onClick={() => handleUrlSave("GLOBAL", "globalAffidavit")}
+                    className="bg-[#c23b24] hover:bg-[#c23b24]/90 text-white text-xs font-bold px-4"
+                  >
+                    Guardar URL
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-[#fcfaf9]/40 mt-3 italic">Útil para PDFs pesados que estén en la nube.</p>
             </div>
           </div>
         </section>
@@ -508,17 +540,42 @@ export function AdminDocsPage() {
                             )}
                           </div>
 
-                          {/* Upload PDF Field */}
-                          <div className="pt-2 border-t border-white/5">
-                            <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/60 mb-1.5">
-                              Seleccionar nuevo archivo PDF:
-                            </span>
-                            <input
-                              type="file"
-                              accept=".pdf,application/pdf"
-                              onChange={(e) => handleFileChange(product.id, docType, e)}
-                              className="block w-full text-[11px] text-[#fcfaf9]/70 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer transition-all"
-                            />
+                          {/* Upload PDF Field or URL */}
+                          <div className="pt-2 border-t border-white/5 space-y-2">
+                            <div>
+                              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/60 mb-1">
+                                Subir archivo PDF (Máx. 4.5MB):
+                              </span>
+                              <input
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                onChange={(e) => handleFileChange(product.id, docType, e)}
+                                className="block w-full text-[11px] text-[#fcfaf9]/70 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-[#c23b24] file:text-white hover:file:bg-[#c23b24]/90 cursor-pointer transition-all"
+                              />
+                            </div>
+
+                            <div className="pt-1">
+                              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/60 mb-1">
+                                O pegar enlace URL externo:
+                              </span>
+                              <div className="flex gap-1.5">
+                                <input
+                                  type="url"
+                                  placeholder="https://..."
+                                  value={localDocInputs[inputKey] || ""}
+                                  onChange={(e) => setLocalDocInputs((prev) => ({ ...prev, [inputKey]: e.target.value }))}
+                                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-[11px] text-[#fcfaf9] placeholder-[#fcfaf9]/30 outline-none focus:border-[#c23b24]"
+                                />
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  onClick={() => handleUrlSave(product.id, docType)}
+                                  className="bg-white/10 hover:bg-[#c23b24] text-white text-[10px] font-bold px-2.5 py-1 h-auto"
+                                >
+                                  Guardar
+                                </Button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );

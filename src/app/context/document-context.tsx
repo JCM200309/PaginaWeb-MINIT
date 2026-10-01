@@ -104,6 +104,23 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  const uploadDocFile = async (docId: string, fileData: string): Promise<string> => {
+    try {
+      const res = await fetch("/api/documents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ docId, fileData }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) return data.url;
+      }
+    } catch (e) {
+      console.warn("Could not upload doc file directly to server", e);
+    }
+    return fileData;
+  };
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY_DOCS, JSON.stringify(overrides));
@@ -132,13 +149,19 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   };
 
-  const updateProductDoc = (productId: string, docType: DocType, newUrlOrData: string) => {
+  const updateProductDoc = async (productId: string, docType: DocType, newUrlOrData: string) => {
+    let finalUrl = newUrlOrData;
+    if (newUrlOrData.startsWith("data:")) {
+      const docId = `${productId}_${docType}`;
+      finalUrl = await uploadDocFile(docId, newUrlOrData);
+    }
+
     setOverrides((prev) => {
       const updated = {
         ...prev,
         [productId]: {
           ...(prev[productId] || {}),
-          [docType]: newUrlOrData,
+          [docType]: finalUrl,
         },
       };
       syncToServer(updated, globalAffidavit);
@@ -146,9 +169,14 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
   };
 
-  const updateGlobalAffidavit = (newUrlOrData: string) => {
-    setGlobalAffidavit(newUrlOrData);
-    syncToServer(overrides, newUrlOrData);
+  const updateGlobalAffidavit = async (newUrlOrData: string) => {
+    let finalUrl = newUrlOrData;
+    if (newUrlOrData.startsWith("data:")) {
+      const docId = "GLOBAL_globalAffidavit";
+      finalUrl = await uploadDocFile(docId, newUrlOrData);
+    }
+    setGlobalAffidavit(finalUrl);
+    syncToServer(overrides, finalUrl);
   };
 
   const resetProductDoc = (productId: string, docType: DocType) => {

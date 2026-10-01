@@ -1,7 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Memory fallback for serverless session execution
-let inMemoryDocsStore: any = null;
+let inMemoryDocsStore: { overrides: Record<string, any>; globalAffidavit: string | null } = {
+  overrides: {},
+  globalAffidavit: null,
+};
+let inMemoryDocFilesStore: Record<string, string> = {};
 
 function getKvCredentials() {
   const kvUrl =
@@ -17,6 +21,86 @@ function getKvCredentials() {
     process.env.STORAGE_TOKEN;
 
   return { kvUrl, kvToken };
+}
+
+async function kvGet(key: string, kvUrl: string, kvToken: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${kvUrl}/get/${encodeURIComponent(key)}`, {
+      headers: { Authorization: `Bearer ${kvToken}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.result === undefined || data.result === null) return null;
+    return typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+  } catch (e) {
+    console.error(`Error reading key ${key} from KV:`, e);
+    return null;
+  }
+}
+
+async function kvSet(key: string, value: any, kvUrl: string, kvToken: string): Promise<boolean> {
+  try {
+    const stringVal = typeof value === 'string' ? value : JSON.stringify(value);
+    const res = await fetch(`${kvUrl}/set/${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${kvToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(stringVal),
+    });
+    return res.ok;
+  } catch (e) {
+    console.error(`Error setting key ${key} in KV:`, e);
+    return false;
+  }
+}
+
+// Clean embedded base64 URLs from index and offload them to separate KV keys
+async function sanitizeAndOffloadIndex(
+  indexData: { overrides?: Record<string, any>; globalAffidavit?: string | null },
+  kvUrl?: string,
+  kvToken?: string
+) {
+  let modified = false;
+  const overrides = indexData.overrides || {};
+  let globalAffidavit = indexData.globalAffidavit || null;
+
+  if (globalAffidavit && globalAffidavit.startsWith('data:')) {
+    const fileKey = 'GLOBAL_globalAffidavit';
+    inMemoryDocFilesStore[fileKey] = globalAffidavit;
+    if (kvUrl && kvToken) {
+      await kvSet(`minit_doc_file:${fileKey}`, globalAffidavit, kvUrl, kvToken);
+    }
+    globalAffidavit = `/api/documents?docId=${fileKey}`;
+    modified = true;
+  }
+
+  const cleanOverrides: Record<string, any> = {};
+  for (const [prodId, docsObj] of Object.entries(overrides)) {
+    if (!docsObj || typeof docsObj !== 'object') continue;
+    cleanOverrides[prodId] = {};
+    for (const [docType, val] of Object.entries(docsObj as Record<string, any>)) {
+      if (typeof val === 'string' && val.startsWith('data:')) {
+        const fileKey = `${prodId}_${docType}`;
+        inMemoryDocFilesStore[fileKey] = val;
+        if (kvUrl && kvToken) {
+          await kvSet(`minit_doc_file:${fileKey}`, val, kvUrl, kvToken);
+        }
+        cleanOverrides[prodId][docType] = `/api/documents?docId=${fileKey}`;
+        modified = true;
+      } else {
+        cleanOverrides[prodId][docType] = val;
+      }
+    }
+  }
+
+  const resultIndex = { overrides: cleanOverrides, globalAffidavit };
+  if (modified && kvUrl && kvToken) {
+    await kvSet('minit_doc_overrides', JSON.stringify(resultIndex), kvUrl, kvToken);
+  }
+
+  return { resultIndex, modified };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -38,46 +122,108 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { kvUrl, kvToken } = getKvCredentials();
 
-  // GET: Retrieve documents configuration
+  // GET: Fetch individual document file OR retrieve index map
   if (req.method === 'GET') {
-    if (kvUrl && kvToken) {
-      try {
-        const kvRes = await fetch(`${kvUrl}/get/minit_doc_overrides`, {
-          headers: { Authorization: `Bearer ${kvToken}` },
-        });
-        const kvData = await kvRes.json();
-        if (kvData.result) {
-          const parsed = typeof kvData.result === 'string' ? JSON.parse(kvData.result) : kvData.result;
-          return res.status(200).json(parsed);
+    const docId = req.query.docId as string | undefined;
+
+    // 1. Serving a specific document file by docId
+    if (docId) {
+      let fileData: string | null = null;
+      if (kvUrl && kvToken) {
+        fileData = await kvGet(`minit_doc_file:${docId}`, kvUrl, kvToken);
+      }
+      if (!fileData) {
+        fileData = inMemoryDocFilesStore[docId] || null;
+      }
+
+      if (!fileData) {
+        return res.status(404).json({ error: 'Documento no encontrado' });
+      }
+
+      // If it's a base64 Data URL, render as binary file
+      if (fileData.startsWith('data:')) {
+        const matches = fileData.match(/^data:([^;]+);base64,(.*)$/s);
+        if (matches) {
+          const contentType = matches[1];
+          const base64Str = matches[2];
+          const buffer = Buffer.from(base64Str, 'base64');
+
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Content-Length', buffer.length.toString());
+          res.setHeader('Content-Disposition', `inline; filename="${docId}.pdf"`);
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          return res.status(200).send(buffer);
         }
-      } catch (e) {
-        console.error('Error reading from Vercel KV:', e);
+      }
+
+      // If it's an external URL, redirect
+      if (fileData.startsWith('http://') || fileData.startsWith('https://')) {
+        return res.redirect(302, fileData);
+      }
+
+      return res.status(400).json({ error: 'Formato de documento no válido' });
+    }
+
+    // 2. Serving document overrides index
+    let rawResult: any = null;
+    if (kvUrl && kvToken) {
+      const kvVal = await kvGet('minit_doc_overrides', kvUrl, kvToken);
+      if (kvVal) {
+        try {
+          rawResult = typeof kvVal === 'string' ? JSON.parse(kvVal) : kvVal;
+          if (typeof rawResult === 'string') {
+            rawResult = JSON.parse(rawResult);
+          }
+        } catch (e) {
+          console.error('Error parsing minit_doc_overrides KV JSON:', e);
+        }
       }
     }
 
-    return res.status(200).json(inMemoryDocsStore || { overrides: {}, globalAffidavit: null });
+    if (!rawResult) {
+      rawResult = inMemoryDocsStore || { overrides: {}, globalAffidavit: null };
+    }
+
+    // Sanitize any legacy embedded base64 URLs
+    const { resultIndex } = await sanitizeAndOffloadIndex(rawResult, kvUrl, kvToken);
+    inMemoryDocsStore = resultIndex;
+
+    return res.status(200).json(resultIndex);
   }
 
-  // POST: Save documents configuration
+  // POST: Save individual document file OR save document overrides index
   if (req.method === 'POST') {
     try {
-      const { overrides, globalAffidavit } = req.body;
-      
-      // Store in memory
-      inMemoryDocsStore = { overrides, globalAffidavit };
+      const { docId, fileData, overrides, globalAffidavit } = req.body || {};
 
-      if (kvUrl && kvToken) {
-        await fetch(`${kvUrl}/set/minit_doc_overrides`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${kvToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(JSON.stringify({ overrides, globalAffidavit })),
-        });
+      // 1. Save a single document file directly
+      if (docId && fileData) {
+        inMemoryDocFilesStore[docId] = fileData;
+        if (kvUrl && kvToken) {
+          await kvSet(`minit_doc_file:${docId}`, fileData, kvUrl, kvToken);
+        }
+        const documentUrl = `/api/documents?docId=${encodeURIComponent(docId)}`;
+        return res.status(200).json({ success: true, url: documentUrl });
       }
 
-      return res.status(200).json({ success: true, message: 'Documentos guardados globalmente.' });
+      // 2. Save document overrides index
+      const { resultIndex } = await sanitizeAndOffloadIndex(
+        { overrides: overrides || {}, globalAffidavit: globalAffidavit || null },
+        kvUrl,
+        kvToken
+      );
+
+      inMemoryDocsStore = resultIndex;
+
+      if (kvUrl && kvToken) {
+        await kvSet('minit_doc_overrides', JSON.stringify(resultIndex), kvUrl, kvToken);
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Documentos guardados globalmente.',
+        data: resultIndex,
+      });
     } catch (err: any) {
       console.error('Error saving documents:', err);
       return res.status(500).json({ error: err.message || 'Error al guardar documentos.' });
@@ -86,3 +232,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   return res.status(405).json({ error: 'Method not allowed' });
 }
+
