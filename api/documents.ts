@@ -31,7 +31,19 @@ async function kvGet(key: string, kvUrl: string, kvToken: string): Promise<strin
     if (!res.ok) return null;
     const data = await res.json();
     if (data.result === undefined || data.result === null) return null;
-    return typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+
+    let result = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+
+    // Unwrap JSON-encoded strings (e.g. '"https://..."' → 'https://...')
+    // This handles cases where Upstash stores the raw request body including quotes
+    if (result.startsWith('"') && result.endsWith('"')) {
+      try {
+        const parsed = JSON.parse(result);
+        if (typeof parsed === 'string') result = parsed;
+      } catch {}
+    }
+
+    return result;
   } catch (e) {
     console.error(`Error reading key ${key} from KV:`, e);
     return null;
@@ -40,14 +52,15 @@ async function kvGet(key: string, kvUrl: string, kvToken: string): Promise<strin
 
 async function kvSet(key: string, value: any, kvUrl: string, kvToken: string): Promise<boolean> {
   try {
-    const stringVal = typeof value === 'string' ? value : JSON.stringify(value);
+    // Send the value as a raw string (Upstash stores the request body as-is)
+    const body = typeof value === 'string' ? value : JSON.stringify(value);
     const res = await fetch(`${kvUrl}/set/${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${kvToken}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
       },
-      body: JSON.stringify(stringVal),
+      body,
     });
     return res.ok;
   } catch (e) {
@@ -161,7 +174,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.redirect(302, fileData);
       }
 
-      return res.status(400).json({ error: 'Formato de documento no válido' });
+      // Last resort: log and return useful error info for debugging
+      console.error(`[docId=${docId}] Formato inesperado de fileData:`, fileData?.slice(0, 100));
+      return res.status(400).json({
+        error: 'Formato de documento no válido',
+        hint: 'El archivo puede haber sido almacenado con un formato incorrecto. Volvé a subir el documento desde el panel.',
+      });
     }
 
     // 2. Serving document overrides index
