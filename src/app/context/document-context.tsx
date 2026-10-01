@@ -21,8 +21,8 @@ interface DocumentContextType {
     safetySheet: string;
     affidavitSheet: string;
   };
-  updateProductDoc: (productId: string, docType: DocType, newUrlOrData: string) => void;
-  updateGlobalAffidavit: (newUrlOrData: string) => void;
+  updateProductDoc: (productId: string, docType: DocType, fileOrUrl: File | string) => Promise<void>;
+  updateGlobalAffidavit: (fileOrUrl: File | string) => Promise<void>;
   resetProductDoc: (productId: string, docType: DocType) => void;
   resetAllDocs: () => void;
   exportDocsJson: () => string;
@@ -104,21 +104,46 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const uploadDocFile = async (docId: string, fileData: string): Promise<string> => {
+  const CLOUDINARY_CLOUD_NAME = "z034mytt";
+  const CLOUDINARY_UPLOAD_PRESET = "Pagina-Minit";
+
+  const uploadToCloudinary = async (file: File, docId: string): Promise<string> => {
+    // 1. Upload directly to Cloudinary from the browser
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("resource_type", "raw");
+
+    const cloudinaryRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+      { method: "POST", body: formData }
+    );
+
+    if (!cloudinaryRes.ok) {
+      const err = await cloudinaryRes.json().catch(() => ({}));
+      throw new Error(err?.error?.message || "Error al subir el archivo a Cloudinary");
+    }
+
+    const cloudinaryData = await cloudinaryRes.json();
+    const cloudinaryUrl = cloudinaryData.secure_url as string;
+
+    // 2. Register the Cloudinary URL in our API under a stable docId
+    //    so the public URL stays on our own domain
     try {
-      const res = await fetch("/api/documents", {
+      const apiRes = await fetch("/api/documents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ docId, fileData }),
+        body: JSON.stringify({ docId, fileData: cloudinaryUrl }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.url) return data.url;
+      if (apiRes.ok) {
+        const apiData = await apiRes.json();
+        if (apiData.url) return apiData.url; // /api/documents?docId=xxx
       }
     } catch (e) {
-      console.warn("Could not upload doc file directly to server", e);
+      console.warn("No se pudo registrar la URL en la API, usando URL de Cloudinary directamente", e);
     }
-    return fileData;
+
+    return cloudinaryUrl; // Fallback
   };
 
   useEffect(() => {
@@ -149,11 +174,13 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   };
 
-  const updateProductDoc = async (productId: string, docType: DocType, newUrlOrData: string) => {
-    let finalUrl = newUrlOrData;
-    if (newUrlOrData.startsWith("data:")) {
+  const updateProductDoc = async (productId: string, docType: DocType, fileOrUrl: File | string) => {
+    let finalUrl: string;
+    if (fileOrUrl instanceof File) {
       const docId = `${productId}_${docType}`;
-      finalUrl = await uploadDocFile(docId, newUrlOrData);
+      finalUrl = await uploadToCloudinary(fileOrUrl, docId);
+    } else {
+      finalUrl = fileOrUrl;
     }
 
     setOverrides((prev) => {
@@ -169,11 +196,12 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
   };
 
-  const updateGlobalAffidavit = async (newUrlOrData: string) => {
-    let finalUrl = newUrlOrData;
-    if (newUrlOrData.startsWith("data:")) {
-      const docId = "GLOBAL_globalAffidavit";
-      finalUrl = await uploadDocFile(docId, newUrlOrData);
+  const updateGlobalAffidavit = async (fileOrUrl: File | string) => {
+    let finalUrl: string;
+    if (fileOrUrl instanceof File) {
+      finalUrl = await uploadToCloudinary(fileOrUrl, "GLOBAL_globalAffidavit");
+    } else {
+      finalUrl = fileOrUrl;
     }
     setGlobalAffidavit(finalUrl);
     syncToServer(overrides, finalUrl);

@@ -93,28 +93,26 @@ export function AdminDocsPage() {
       return;
     }
 
-    if (file.size > 4.5 * 1024 * 1024) {
-      toast.error("El archivo supera los 4.5MB (límite máximo permitido por la plataforma). Por favor comprime el PDF o utiliza una URL directa.");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("El archivo supera los 10MB. Por favor comprime el PDF antes de subirlo.");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const result = reader.result as string;
-      const toastId = toast.loading("Subiendo documento al servidor...");
+    const toastId = toast.loading("Subiendo documento a la nube...");
+    const upload = async () => {
       try {
         if (productId === "GLOBAL") {
-          await updateGlobalAffidavit(result);
+          await updateGlobalAffidavit(file);
           toast.success("Declaración de Aplicación General actualizada exitosamente.", { id: toastId });
         } else {
-          await updateProductDoc(productId, docType as DocType, result);
+          await updateProductDoc(productId, docType as DocType, file);
           toast.success(`Documento actualizado para ${productId}.`, { id: toastId });
         }
-      } catch (err) {
-        toast.error("Error al guardar el documento.", { id: toastId });
+      } catch (err: any) {
+        toast.error(err?.message || "Error al subir el documento.", { id: toastId });
       }
     };
-    reader.readAsDataURL(file);
+    upload();
   };
 
   const handleUrlSave = (productId: string | "GLOBAL", docType: DocType | "globalAffidavit") => {
@@ -384,7 +382,7 @@ export function AdminDocsPage() {
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#fcfaf9]/80 mb-3 flex items-center gap-2">
                   <Upload className="w-4 h-4 text-[#c23b24]" />
-                  Subir Archivo PDF (Máx. 4.5MB)
+                  Subir Archivo PDF (Máx. 10MB — vía Cloudinary)
                 </label>
                 <input
                   type="file"
@@ -544,7 +542,7 @@ export function AdminDocsPage() {
                           <div className="pt-2 border-t border-white/5 space-y-2">
                             <div>
                               <span className="block text-[10px] font-bold uppercase tracking-wider text-[#fcfaf9]/60 mb-1">
-                                Subir archivo PDF (Máx. 4.5MB):
+                                Subir archivo PDF vía Cloudinary (Máx. 10MB):
                               </span>
                               <input
                                 type="file"
