@@ -183,7 +183,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           res.setHeader('Content-Type', contentType);
           if (contentLength) res.setHeader('Content-Length', contentLength);
           res.setHeader('Content-Disposition', `inline; filename="${docId}.pdf"`);
-          res.setHeader('Cache-Control', 'public, max-age=3600');
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+          res.setHeader('Pragma', 'no-cache');
 
           // Pipe the Cloudinary stream directly to the response — no buffering, no size cap
           const { Readable } = await import('stream');
