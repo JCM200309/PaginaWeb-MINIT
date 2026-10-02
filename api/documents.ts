@@ -169,9 +169,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
 
-      // If it's an external URL, redirect
+      // Proxy via streaming (no size limit — pipes bytes directly without buffering)
       if (fileData.startsWith('http://') || fileData.startsWith('https://')) {
-        return res.redirect(302, fileData);
+        try {
+          const upstream = await fetch(fileData);
+          if (!upstream.ok) {
+            return res.status(502).json({ error: 'No se pudo obtener el documento del servidor de almacenamiento' });
+          }
+
+          const contentType = upstream.headers.get('content-type') || 'application/pdf';
+          const contentLength = upstream.headers.get('content-length');
+
+          res.setHeader('Content-Type', contentType);
+          if (contentLength) res.setHeader('Content-Length', contentLength);
+          res.setHeader('Content-Disposition', `inline; filename="${docId}.pdf"`);
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+
+          // Pipe the Cloudinary stream directly to the response — no buffering, no size cap
+          const { Readable } = await import('stream');
+          const nodeStream = Readable.fromWeb(upstream.body as Parameters<typeof Readable.fromWeb>[0]);
+          nodeStream.pipe(res);
+          return;
+        } catch (e) {
+          console.error(`[docId=${docId}] Error al hacer proxy del archivo:`, e);
+          return res.status(502).json({ error: 'Error al obtener el documento' });
+        }
       }
 
       // Last resort: log and return useful error info for debugging
