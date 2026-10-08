@@ -1,7 +1,7 @@
 export const es = {
   // Navigation
   "nav.home": "Inicio",
-  "nav.products": "Productos",
+  "nav.products": "Productos/Certificaciones",
   "nav.about": "Nosotros",
   "nav.contact": "Contacto",
   "nav.getQuote": "Solicitar Cotización",
@@ -29,7 +29,12 @@ export const es = {
 
   // Products
   "products.title": "Nuestros Productos",
-  "products.subtitle": "Elija la solución retardante de fuego adecuada para sus necesidades específicas",
+  "products.subtitle": "Comprá el producto y/o descargá la documentación a presentar abajo",
+  "products.searchPlaceholder": "Buscar productos por nombre (ej. Textil, Madera, Latex)...",
+  "products.noResultsTitle": "No se encontraron productos",
+  "products.noResultsDesc": "No encontramos ningún producto que coincida con tu búsqueda. Intenta con otra palabra o porción del nombre.",
+  "products.clearSearch": "Limpiar búsqueda",
+  "products.showingResults": "productos encontrados",
   "products.wood.name": "MINIT Maderas",
   "products.wood.desc": "Retardante de fuego y Biocida (Preservador), impregnante para todo tipo de maderas.",
   "products.textile.name": "MINIT Textil",

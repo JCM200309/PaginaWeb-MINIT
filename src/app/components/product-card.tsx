@@ -55,23 +55,6 @@ export function ProductCard({ product, index }: ProductCardProps) {
               </p>
             </div>
 
-            {/* Affidavit - Highly Requested */}
-            <button
-              type="button"
-              onClick={() => openDocument(docs.affidavitSheet)}
-              className="flex items-center justify-between w-full p-3 mb-2 rounded-xl bg-[#f6d94b]/10 hover:bg-[#f6d94b]/20 border border-[#f6d94b]/30 hover:border-[#f6d94b]/60 transition-all group/affidavit font-body shadow-sm text-left"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#f6d94b]/20 group-hover/affidavit:bg-[#f6d94b] group-hover/affidavit:text-[#140c03] text-[#140c03] transition-colors border border-[#f6d94b]/30">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-[#140c03] text-sm group-hover/affidavit:text-[#140c03] transition-colors">{t("products.affidavit")}</span>
-                </div>
-              </div>
-              <ExternalLink className="w-4 h-4 text-[#140c03]/40 group-hover/affidavit:text-[#140c03] transition-colors mr-1" />
-            </button>
-
             {/* Online Purchase Buttons - Prominent Tienda Nube + Secondary Mercado Libre */}
             <div className="space-y-2 my-2">
               {/* Tienda Nube (Primary Store CTA - Highest Prominence) */}
@@ -118,31 +101,64 @@ export function ProductCard({ product, index }: ProductCardProps) {
               </a>
             </div>
 
-            {/* Document Sheets Quick Access */}
-            <div className="grid grid-cols-3 gap-2 border-t border-[#140c03]/5 pt-3">
-              <button
-                type="button"
-                onClick={() => openDocument(docs.technicalSheet)}
-                className="flex flex-col items-center justify-center p-2 rounded-lg bg-[#140c03]/5 hover:bg-[#140c03] hover:text-white text-[#140c03]/70 transition-all group/doc text-center cursor-pointer"
-              >
-                <FileText className="w-3.5 h-3.5 mb-1 group-hover/doc:text-white group-hover/doc:scale-110 transition-transform" />
-                <span className="font-semibold text-[10px] leading-tight">{t("products.technicalSheet")}</span>
-              </button>
+            {/* Document Sheets Quick Access - 2x2 Grid with Certificados Prominent & Affidavit Last */}
+            <div className="grid grid-cols-2 gap-2 border-t border-[#140c03]/5 pt-3">
+              {/* 1. Certificados - Prominent First Position with Distinct Color */}
               <button
                 type="button"
                 onClick={() => openDocument(docs.certificateSheet)}
-                className="flex flex-col items-center justify-center p-2 rounded-lg bg-[#140c03]/5 hover:bg-[#140c03] hover:text-white text-[#140c03]/70 transition-all group/doc text-center cursor-pointer"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br from-amber-500/15 via-[#f6d94b]/20 to-amber-500/10 hover:from-amber-500/25 hover:to-amber-500/20 border-2 border-amber-400 hover:border-amber-500 text-amber-950 transition-all duration-200 group/cert text-left cursor-pointer shadow-xs hover:shadow-sm min-h-[50px]"
               >
-                <Award className="w-3.5 h-3.5 mb-1 group-hover/doc:text-white group-hover/doc:scale-110 transition-transform" />
-                <span className="font-semibold text-[10px] leading-tight">{t("products.certificates")}</span>
+                <div className="p-1.5 rounded-lg bg-amber-500 text-white flex-shrink-0 group-hover/cert:scale-110 shadow-xs transition-transform duration-200">
+                  <Award className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-extrabold text-xs text-amber-950 leading-tight">
+                    {t("products.certificates")}
+                  </span>
+                </div>
               </button>
+
+              {/* 2. Ficha Técnica */}
+              <button
+                type="button"
+                onClick={() => openDocument(docs.technicalSheet)}
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
+              >
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <span className="font-semibold text-xs leading-tight">
+                  {t("products.technicalSheet")}
+                </span>
+              </button>
+
+              {/* 3. Hoja de Seguridad */}
               <button
                 type="button"
                 onClick={() => openDocument(docs.safetySheet)}
-                className="flex flex-col items-center justify-center p-2 rounded-lg bg-[#140c03]/5 hover:bg-[#140c03] hover:text-white text-[#140c03]/70 transition-all group/doc text-center cursor-pointer"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
               >
-                <ShieldCheck className="w-3.5 h-3.5 mb-1 group-hover/doc:text-white group-hover/doc:scale-110 transition-transform" />
-                <span className="font-semibold text-[10px] leading-tight">{t("products.safetySheet")}</span>
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <span className="font-semibold text-xs leading-tight">
+                  {t("products.safetySheet")}
+                </span>
+              </button>
+
+              {/* 4. Modelo de Declaración Jurada - Last Component in 2x2 Grid */}
+              <button
+                type="button"
+                onClick={() => openDocument(docs.affidavitSheet)}
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
+              >
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <span className="font-semibold text-xs leading-tight">
+                  {t("products.affidavit")}
+                </span>
               </button>
             </div>
           </div>

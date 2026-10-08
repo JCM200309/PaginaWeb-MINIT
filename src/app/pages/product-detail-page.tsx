@@ -8,7 +8,7 @@ import { useLanguage } from "../context/language-context";
 import { useDocumentContext } from "../context/document-context";
 import { openDocument } from "../utils/doc-utils";
 import { products } from "../data/products";
-import { ArrowLeft, Package, CheckCircle, Award, FileText, ExternalLink, Store } from "lucide-react";
+import { ArrowLeft, Package, CheckCircle, Award, FileText, ExternalLink, Store, ShieldCheck } from "lucide-react";
 
 export function ProductDetailPage() {
   const { id } = useParams();
@@ -125,43 +125,96 @@ export function ProductDetailPage() {
                       <ExternalLink className="w-4 h-4 ml-2 text-[#2d3277]/60 group-hover/ml:text-[#2d3277]" />
                     </Button>
                   </a>
-
-                  {/* Technical Sheet */}
-                  <Button
-                    onClick={() => openDocument(docs.technicalSheet)}
-                    variant="outline"
-                    className="border-white/20 text-[#fcfaf9] hover:bg-white/10 bg-transparent font-semibold py-6 rounded-xl shadow-none"
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    {t("products.technicalSheet")}
-                  </Button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-6 border-t border-white/10">
+                {/* 1. Certificados - Botón de Descarga Destacado con Alta Predominancia */}
                 <button
                   type="button"
                   onClick={() => openDocument(docs.certificateSheet)}
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
+                  className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-gradient-to-br from-amber-500/20 via-[#f6d94b]/20 to-amber-500/10 hover:from-amber-500/30 hover:to-[#f6d94b]/30 border-2 border-amber-400/80 hover:border-amber-400 text-[#fcfaf9] shadow-lg shadow-amber-500/10 hover:shadow-amber-500/25 transition-all duration-300 group/cert text-left cursor-pointer"
                 >
-                  <Award className="w-4 h-4 text-[#c23b24]" />
-                  <span>{t("products.certificates")}</span>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-amber-500 text-[#140c03] flex-shrink-0 group-hover/cert:scale-110 shadow-xs transition-transform duration-200">
+                      <Award className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-extrabold text-sm text-[#fcfaf9] leading-tight group-hover/cert:text-amber-300 transition-colors">
+                        {t("products.certificates")}
+                      </span>
+                      <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mt-0.5">
+                        {language === "es" ? "Descargar PDF" : "Download PDF"}
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-amber-400/80 group-hover/cert:translate-x-0.5 group-hover/cert:text-amber-300 transition-all flex-shrink-0" />
                 </button>
+
+                {/* 2. Ficha Técnica - Formato de Botón al mismo nivel */}
+                <button
+                  type="button"
+                  onClick={() => openDocument(docs.technicalSheet)}
+                  className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/30 text-[#fcfaf9] shadow-sm hover:shadow transition-all duration-200 group/tech text-left cursor-pointer"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-white/10 text-white/80 group-hover/tech:text-white group-hover/tech:bg-white/15 flex-shrink-0 transition-colors duration-200">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-sm text-[#fcfaf9]/90 group-hover/tech:text-white leading-tight transition-colors">
+                        {t("products.technicalSheet")}
+                      </span>
+                      <span className="text-[10px] text-[#fcfaf9]/50 font-medium uppercase tracking-wider mt-0.5">
+                        PDF
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-[#fcfaf9]/40 group-hover/tech:translate-x-0.5 group-hover/tech:text-white/80 transition-all flex-shrink-0" />
+                </button>
+
+                {/* 3. Hoja de Seguridad - Formato de Botón Claro */}
                 <button
                   type="button"
                   onClick={() => openDocument(docs.safetySheet)}
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
+                  className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/30 text-[#fcfaf9] shadow-sm hover:shadow transition-all duration-200 group/safety text-left cursor-pointer"
                 >
-                  <FileText className="w-4 h-4 text-[#c23b24]" />
-                  <span>{t("products.safetySheet")}</span>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-white/10 text-white/80 group-hover/safety:text-white group-hover/safety:bg-white/15 flex-shrink-0 transition-colors duration-200">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-sm text-[#fcfaf9]/90 group-hover/safety:text-white leading-tight transition-colors">
+                        {t("products.safetySheet")}
+                      </span>
+                      <span className="text-[10px] text-[#fcfaf9]/50 font-medium uppercase tracking-wider mt-0.5">
+                        PDF
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-[#fcfaf9]/40 group-hover/safety:translate-x-0.5 group-hover/safety:text-white/80 transition-all flex-shrink-0" />
                 </button>
+
+                {/* 4. Modelo de Declaración Jurada - Formato de Botón Claro */}
                 <button
                   type="button"
                   onClick={() => openDocument(docs.affidavitSheet)}
-                  className="flex items-center gap-2 text-sm text-[#fcfaf9]/70 hover:text-[#fcfaf9] transition-colors font-medium text-left"
+                  className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/30 text-[#fcfaf9] shadow-sm hover:shadow transition-all duration-200 group/affidavit text-left cursor-pointer"
                 >
-                  <FileText className="w-4 h-4 text-[#c23b24]" />
-                  <span>{t("products.affidavit")}</span>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-white/10 text-white/80 group-hover/affidavit:text-white group-hover/affidavit:bg-white/15 flex-shrink-0 transition-colors duration-200">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-sm text-[#fcfaf9]/90 group-hover/affidavit:text-white leading-tight transition-colors">
+                        {t("products.affidavit")}
+                      </span>
+                      <span className="text-[10px] text-[#fcfaf9]/50 font-medium uppercase tracking-wider mt-0.5">
+                        PDF
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-[#fcfaf9]/40 group-hover/affidavit:translate-x-0.5 group-hover/affidavit:text-white/80 transition-all flex-shrink-0" />
                 </button>
               </div>
             </motion.div>

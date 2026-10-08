@@ -1,7 +1,7 @@
 export const en = {
   // Navigation
   "nav.home": "Home",
-  "nav.products": "Products",
+  "nav.products": "Products/Certifications",
   "nav.about": "About",
   "nav.contact": "Contact",
   "nav.getQuote": "Get Quote",
@@ -29,7 +29,12 @@ export const en = {
 
   // Products
   "products.title": "Our Products",
-  "products.subtitle": "Choose the right fire retardant solution for your specific needs",
+  "products.subtitle": "Buy the product and/or download the documentation to present below",
+  "products.searchPlaceholder": "Search products by name (e.g. Textile, Woods, Latex)...",
+  "products.noResultsTitle": "No products found",
+  "products.noResultsDesc": "We couldn't find any products matching your search. Try another keyword or name snippet.",
+  "products.clearSearch": "Clear search",
+  "products.showingResults": "products found",
   "products.wood.name": "MINIT Woods",
   "products.wood.desc": "Fire retardant and biocide (preservative), impregnating agent for all types of wood.",
   "products.textile.name": "MINIT Textile",
