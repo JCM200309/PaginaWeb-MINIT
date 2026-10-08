@@ -28,8 +28,8 @@ export const en = {
   "product.characteristics.subtitle": "Our fire retardant products are designed to inhibit ignition and slow the development and spread of fire, protecting both people and property.",
 
   // Products
-  "products.title": "Our Products",
-  "products.subtitle": "Buy the product and/or download the documentation to present below",
+  "products.title": "Find your product",
+  "products.subtitle": "You can buy or download their certifications right there",
   "products.searchPlaceholder": "Search products by name (e.g. Textile, Woods, Latex)...",
   "products.noResultsTitle": "No products found",
   "products.noResultsDesc": "We couldn't find any products matching your search. Try another keyword or name snippet.",

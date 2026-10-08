@@ -28,8 +28,8 @@ export const es = {
   "product.characteristics.subtitle": "Nuestros productos retardantes de fuego están diseñados para inhibir la ignición y retardar el desarrollo y propagación del fuego, protegiendo tanto a personas como bienes.",
 
   // Products
-  "products.title": "Nuestros Productos",
-  "products.subtitle": "Comprá el producto y/o descargá la documentación a presentar abajo",
+  "products.title": "Buscá tu producto",
+  "products.subtitle": "Podes comprar o descargar ahí sus certificaciones",
   "products.searchPlaceholder": "Buscar productos por nombre (ej. Textil, Madera, Latex)...",
   "products.noResultsTitle": "No se encontraron productos",
   "products.noResultsDesc": "No encontramos ningún producto que coincida con tu búsqueda. Intenta con otra palabra o porción del nombre.",
