@@ -29,7 +29,7 @@ export const en = {
 
   // Products
   "products.title": "Find your product",
-  "products.subtitle": "You can buy or download certifications <strong>here</strong>",
+  "products.subtitle": "You can buy or download certifications here",
   "products.searchPlaceholder": "Search products by name (e.g. Textile, Woods, Latex)...",
   "products.noResultsTitle": "No products found",
   "products.noResultsDesc": "We couldn't find any products matching your search. Try another keyword or name snippet.",
