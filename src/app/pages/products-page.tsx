@@ -65,9 +65,10 @@ export function ProductsPage() {
             <h1 className="text-5xl md:text-7xl font-bold text-[#fcfaf9] mb-4 font-heading tracking-tight italic">
               {t("products.title")}
             </h1>
-            <p className="text-xl md:text-2xl text-[#fcfaf9]/80 font-body leading-relaxed max-w-2xl mx-auto mb-10 font-normal">
-              {t("products.subtitle")}
-            </p>
+            <p
+              className="text-xl md:text-2xl text-[#fcfaf9]/80 font-body leading-relaxed max-w-2xl mx-auto mb-10 font-normal [&_strong]:text-white [&_strong]:font-bold"
+              dangerouslySetInnerHTML={{ __html: t("products.subtitle") }}
+            />
 
             {/* Search Bar Container inside the Dark Section */}
             <div className="max-w-2xl mx-auto text-left">
