@@ -5,7 +5,7 @@ import { Footer } from "../components/footer";
 import { ProductCard } from "../components/product-card";
 import { products } from "../data/products";
 import { useLanguage } from "../context/language-context";
-import { Flame, Search, X, PackageSearch } from "lucide-react";
+import { Flame, Search, X, PackageSearch, ChevronDown } from "lucide-react";
 import { FireIllusion } from "../components/fire-illusion";
 import { Button } from "../components/ui/button";
 
@@ -47,7 +47,7 @@ export function ProductsPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="pt-40 pb-20 bg-[#140c03] relative overflow-hidden border-b border-[#140c03]/10">
+      <section className="pt-32 pb-12 bg-[#140c03] relative overflow-hidden border-b border-[#140c03]/10">
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #fcfaf9 1px, transparent 0)", backgroundSize: "32px 32px" }} />
 
         <FireIllusion />
@@ -59,14 +59,14 @@ export function ProductsPage() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="text-center max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-[#f6d94b]/10 backdrop-blur-xl border border-[#f6d94b]/20 shadow-xl shadow-[#f6d94b]/10 mb-10 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-              <Flame className="w-12 h-12 text-[#f6d94b]" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#f6d94b]/10 backdrop-blur-xl border border-[#f6d94b]/20 shadow-lg shadow-[#f6d94b]/10 mb-6 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+              <Flame className="w-8 h-8 text-[#f6d94b]" />
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-[#fcfaf9] mb-4 font-heading tracking-tight italic">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#fcfaf9] mb-3 font-heading tracking-tight italic">
               {t("products.title")}
             </h1>
             <p
-              className="text-xl md:text-2xl text-[#fcfaf9]/80 font-body leading-relaxed max-w-2xl mx-auto mb-10 font-normal [&_strong]:text-white [&_strong]:font-bold"
+              className="text-base md:text-lg text-[#fcfaf9]/80 font-body leading-relaxed max-w-2xl mx-auto mb-6 font-normal [&_strong]:text-white [&_strong]:font-bold"
               dangerouslySetInnerHTML={{ __html: t("products.subtitle") }}
             />
 
@@ -80,7 +80,7 @@ export function ProductsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("products.searchPlaceholder")}
-                  className="w-full pl-12 pr-12 py-4 rounded-2xl bg-white text-[#140c03] placeholder-[#140c03]/45 border border-white/20 focus:border-[#f6d94b] focus:ring-4 focus:ring-[#f6d94b]/30 shadow-2xl hover:shadow-xl transition-all text-base font-body outline-none"
+                  className="w-full pl-12 pr-12 py-3 rounded-2xl bg-white text-[#140c03] placeholder-[#140c03]/45 border border-white/20 focus:border-[#f6d94b] focus:ring-4 focus:ring-[#f6d94b]/30 shadow-xl hover:shadow-lg transition-all text-sm md:text-base font-body outline-none"
                 />
                 {searchQuery && (
                   <button
@@ -127,12 +127,30 @@ export function ProductsPage() {
                 </span>
               </div>
             </div>
+
+            {/* Bouncing scroll indicator */}
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  const target = document.getElementById("products-catalog");
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                className="p-1.5 rounded-full text-[#f6d94b]/85 hover:text-[#f6d94b] hover:bg-white/5 transition-all cursor-pointer group focus:outline-none"
+                title={language === "es" ? "Desplazarse a los productos" : "Scroll to products"}
+                aria-label={language === "es" ? "Desplazarse a los productos" : "Scroll to products"}
+              >
+                <ChevronDown className="w-5 h-5 animate-bounce group-hover:scale-110 transition-transform" />
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Products Grid Section */}
-      <section className="py-16 bg-[#fcfaf9] relative px-4 min-h-[600px]">
+      <section id="products-catalog" className="py-10 md:py-12 bg-[#fcfaf9] relative px-4 sm:px-6 min-h-[500px]">
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #140c03 1px, transparent 0)", backgroundSize: "32px 32px" }} />
         
         <div className="container mx-auto relative z-10 max-w-7xl">
@@ -145,7 +163,7 @@ export function ProductsPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
                 {filteredProducts.map((product, index) => (
                   <ProductCard key={product.id} product={product} index={index} />

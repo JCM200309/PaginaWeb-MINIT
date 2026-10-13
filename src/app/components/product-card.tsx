@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Button } from "./ui/button";
-import { ArrowRight, FileText, Award, ShieldCheck, ExternalLink, Store, ShoppingCart } from "lucide-react";
+import { ArrowRight, FileText, Award, ShieldCheck, ExternalLink, Store } from "lucide-react";
 import { Link } from "react-router";
 import { useLanguage } from "../context/language-context";
 import { useDocumentContext } from "../context/document-context";
@@ -25,16 +25,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
       transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group bg-white rounded-2xl shadow-sm border border-[#140c03]/10 overflow-hidden hover:border-[#c23b24]/40 hover:shadow-md transition-all duration-500 flex flex-col h-full"
     >
-      <div className="flex flex-col p-6 flex-grow">
+      <div className="flex flex-col p-5 sm:p-6 flex-grow">
         {/* Product Image */}
-        <div className="relative rounded-xl overflow-hidden bg-[#140c03]/5 border border-[#140c03]/5 flex items-center justify-center p-6 group/img aspect-square">
+        <div className="relative rounded-xl overflow-hidden bg-[#140c03]/5 border border-[#140c03]/5 flex items-center justify-center p-4 sm:p-5 group/img h-52 sm:h-56">
           <img
             src={product.image}
             alt={t(product.nameKey)}
             className="w-full h-full object-contain rounded-lg group-hover/img:scale-105 transition-transform duration-700 ease-out"
           />
-          <div className="absolute top-4 right-4 z-10">
-            <div className="px-4 py-1.5 rounded-full bg-[#c23b24] text-white text-xs font-bold uppercase tracking-widest shadow-sm">
+          <div className="absolute top-3 right-3 z-10">
+            <div className="px-3 py-1 rounded-full bg-[#c23b24] text-white text-xs font-bold uppercase tracking-wider shadow-xs">
               {language === "es" ? product.categoryEs : product.categoryEn}
             </div>
           </div>
@@ -45,12 +45,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         {/* Product Details */}
         <div className="flex flex-col justify-between py-2 flex-grow mt-2">
-          <div className="space-y-4 flex flex-col flex-grow">
+          <div className="space-y-3.5 flex flex-col flex-grow">
             <div className="flex-grow">
-              <h3 className="text-2xl font-bold text-[#140c03] mb-2 font-heading tracking-tight italic group-hover:text-[#c23b24] transition-colors">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#140c03] mb-1.5 font-heading tracking-tight italic group-hover:text-[#c23b24] transition-colors leading-snug">
                 {t(product.nameKey)}
               </h3>
-              <p className="text-[#140c03]/70 font-body leading-relaxed text-base line-clamp-3">
+              <p className="text-[#140c03]/70 font-body leading-relaxed text-sm sm:text-base line-clamp-3 min-h-[4.5rem]">
                 {t(product.descKey)}
               </p>
             </div>
@@ -62,22 +62,22 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 href={product.buyTiendaNube || "https://minitignifugos.mitiendanube.com/productos/"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between w-full px-4 py-3 rounded-xl bg-gradient-to-r from-[#004bbd] via-[#0050ff] to-[#0d6eff] hover:from-[#003ecb] hover:to-[#0050ff] text-white shadow-md shadow-[#0050ff]/25 hover:shadow-xl hover:shadow-[#0050ff]/40 transition-all duration-300 group/tn font-body"
+                className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#004bbd] via-[#0050ff] to-[#0d6eff] hover:from-[#003ecb] hover:to-[#0050ff] text-white shadow-sm shadow-[#0050ff]/20 hover:shadow-md transition-all duration-300 group/tn font-body"
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-xs group-hover/tn:scale-110 transition-transform">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-xs group-hover/tn:scale-105 transition-transform shrink-0">
                     <Store className="w-4 h-4 text-white" />
                   </div>
-                  <div className="flex flex-col items-start leading-tight">
+                  <div className="flex flex-col items-start leading-tight min-w-0">
                     <span className="font-extrabold text-sm tracking-wide">
                       {t("products.buyTiendaNube")}
                     </span>
-                    <span className="text-[10px] text-blue-100 font-bold uppercase tracking-widest bg-white/15 px-1.5 py-0.5 rounded-xs mt-0.5">
+                    <span className="text-[10px] text-blue-100 font-bold uppercase tracking-wider bg-white/15 px-1.5 py-0.5 rounded-xs mt-0.5">
                       {t("products.officialStore")}
                     </span>
                   </div>
                 </div>
-                <ExternalLink className="w-4 h-4 text-white/80 group-hover/tn:translate-x-1 group-hover/tn:text-white transition-all" />
+                <ExternalLink className="w-4 h-4 text-white/80 group-hover/tn:translate-x-0.5 group-hover/tn:text-white transition-all shrink-0 ml-1" />
               </a>
 
               {/* Mercado Libre (Secondary Store Option) */}
@@ -87,17 +87,17 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 rel="noopener noreferrer"
                 className="flex items-center justify-between w-full px-4 py-2 rounded-xl bg-[#fffbda] hover:bg-[#fff7b0] border border-[#ffe600] text-[#140c03] transition-all group/ml font-body"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <img
                     src="/Logos/meliLogo.png"
                     alt="Mercado Libre"
-                    className="w-5 h-5 object-contain rounded-full border border-[#ffe600]/50"
+                    className="w-4.5 h-4.5 object-contain rounded-full border border-[#ffe600]/50 shrink-0"
                   />
                   <span className="font-bold text-xs text-[#2d3277]">
                     {t("products.buyMercadoLibre")}
                   </span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-[#2d3277]/60 group-hover/ml:text-[#2d3277] transition-colors" />
+                <ExternalLink className="w-3.5 h-3.5 text-[#2d3277]/60 group-hover/ml:text-[#2d3277] transition-colors shrink-0 ml-1" />
               </a>
             </div>
 
@@ -107,9 +107,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
               <button
                 type="button"
                 onClick={() => openDocument(docs.certificateSheet)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br from-amber-500/15 via-[#f6d94b]/20 to-amber-500/10 hover:from-amber-500/25 hover:to-amber-500/20 border-2 border-amber-400 hover:border-amber-500 text-amber-950 transition-all duration-200 group/cert text-left cursor-pointer shadow-xs hover:shadow-sm min-h-[50px]"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br from-amber-500/15 via-[#f6d94b]/20 to-amber-500/10 hover:from-amber-500/25 hover:to-amber-500/20 border-2 border-amber-400 hover:border-amber-500 text-amber-950 transition-all duration-200 group/cert text-left cursor-pointer shadow-xs hover:shadow-sm min-h-[46px]"
               >
-                <div className="p-1.5 rounded-lg bg-amber-500 text-white flex-shrink-0 group-hover/cert:scale-110 shadow-xs transition-transform duration-200">
+                <div className="p-1.5 rounded-lg bg-amber-500 text-white shrink-0 group-hover/cert:scale-105 shadow-xs transition-transform duration-200">
                   <Award className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col min-w-0">
@@ -123,9 +123,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
               <button
                 type="button"
                 onClick={() => openDocument(docs.technicalSheet)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[46px]"
               >
-                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 shrink-0 transition-colors duration-200">
                   <FileText className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-xs leading-tight">
@@ -137,9 +137,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
               <button
                 type="button"
                 onClick={() => openDocument(docs.safetySheet)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[46px]"
               >
-                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 shrink-0 transition-colors duration-200">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-xs leading-tight">
@@ -151,9 +151,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
               <button
                 type="button"
                 onClick={() => openDocument(docs.affidavitSheet)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[50px]"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#140c03]/[0.03] hover:bg-[#140c03]/[0.08] border border-[#140c03]/10 hover:border-[#140c03]/25 text-[#140c03]/80 hover:text-[#140c03] transition-all duration-200 group/doc text-left cursor-pointer min-h-[46px]"
               >
-                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 group-hover/doc:text-[#140c03] flex-shrink-0 transition-colors duration-200">
+                <div className="p-1.5 rounded-lg bg-[#140c03]/5 group-hover/doc:bg-[#140c03]/10 text-[#140c03]/70 shrink-0 transition-colors duration-200">
                   <FileText className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-xs leading-tight">
@@ -163,14 +163,14 @@ export function ProductCard({ product, index }: ProductCardProps) {
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-4">
             <Button
               asChild
-              className="w-full bg-[#c23b24] hover:bg-[#c23b24]/90 text-white group/btn py-5 text-base rounded-xl shadow-lg shadow-[#c23b24]/20 border-none relative overflow-hidden"
+              className="w-full bg-[#c23b24] hover:bg-[#c23b24]/90 text-white group/btn py-3 text-sm sm:text-base rounded-xl shadow-md shadow-[#c23b24]/20 border-none relative overflow-hidden h-auto"
             >
               <Link to={`/certificates/${product.id}`}>
                 <span className="relative z-10 font-bold tracking-wide">{t("products.viewDetails")}</span>
-                <ArrowRight className="ml-2 w-4 h-4 relative z-10 group-hover/btn:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-1.5 w-4 h-4 relative z-10 group-hover/btn:translate-x-1 transition-transform" />
               </Link>
             </Button>
           </div>
